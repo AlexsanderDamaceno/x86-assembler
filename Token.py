@@ -1,4 +1,5 @@
 import sys
+
 class Token():
 
    def __init__(self, TokenType ,  value):
@@ -11,8 +12,10 @@ class Token():
    def Get_Token_value(self):
         return self.value
 
-   def match(self ,  TokenType):
+   def match(self ,  *Args):
 
-       if self.TokenType != TokenType:
-             print("Error  parsing the statement exptect {} but got {}".format(TokenType , self.TokenType))
-             sys.exit(1)
+       for TokenType in Args:
+         if self.Get_Token_Type() == TokenType:
+             return 1
+       print("Error  parsing the statement expect {} but got {}".format(Args , self.TokenType))
+       sys.exit(1)

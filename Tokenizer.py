@@ -32,10 +32,11 @@ class Tokenizer():
              while self.filestream[self.text_pos].isalpha():
                   name +=  self.filestream[self.text_pos]
                   self.advance()
-
+        
              return Token(TokenType.Name , name)
 
         elif self.filestream[self.text_pos] == '%':
+
              self.advance()
              name = ""
              while self.filestream[self.text_pos].isalpha():
@@ -44,8 +45,22 @@ class Tokenizer():
              return Token(TokenType.Register , name)
 
         elif  self.filestream[self.text_pos]  == ',':
+
             self.advance()
             return Token(TokenType.Colon , ',')
+
+        elif self.filestream[self.text_pos] == '$':
+            self.advance()
+            number = ""
+            while self.filestream[self.text_pos].isdigit():
+               number += self.filestream[self.text_pos]
+               self.advance()
+
+
+            return Token(TokenType.Decimal ,  int(number))
+
+
         elif  self.filestream[self.text_pos]  == '\n':
+
            self.advance()
            return Token(TokenType.NewLine , '\n')

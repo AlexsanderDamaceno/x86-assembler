@@ -11,6 +11,7 @@ buffer  = file.read()
 
 Parser     = Parser(buffer)
 
+
 statements = Parser.parse()
 
 Generator  = CodeGenerate("TESTE" , statements)

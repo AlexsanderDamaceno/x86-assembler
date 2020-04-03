@@ -11,5 +11,4 @@ class Intruction():
         return self.operands
 
     def Get_IntelCode(self , mnemonic):
-        print(mnemonic)
         return Instructions_CodeTable[mnemonic]

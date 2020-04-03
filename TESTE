@@ -1,1 +1,2 @@
-add %eax , %ecx
+add  $1 , %ecx
+add  $2 , %ecx

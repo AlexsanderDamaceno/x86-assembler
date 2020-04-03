@@ -14,6 +14,11 @@ class Register32(Register):
       def Get_RegisterNumber(self):
           return  self.intel_number
 
+class Decimal():
+    def __init__(self ,  value):
+        self.value  = value
+    def Get_decimal(self):
+        return self.value
 
 
 
@@ -22,8 +27,11 @@ class Operands():
     def __init__(self):
         pass
 
-    def MakeOperand(self , Type , name):
+    def MakeOperand(self , Type , value):
          if Type == TokenType.Register:
 
-          if name in registers_map32:
-            return Register32(name , registers_map32[name])
+          if value in registers_map32:
+            return Register32(value , registers_map32[value])
+
+         elif  Type == TokenType.Decimal:
+              return Decimal(value)

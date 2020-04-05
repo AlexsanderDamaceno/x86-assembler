@@ -32,7 +32,7 @@ class Tokenizer():
              while self.filestream[self.text_pos].isalpha():
                   name +=  self.filestream[self.text_pos]
                   self.advance()
-        
+
              return Token(TokenType.Name , name)
 
         elif self.filestream[self.text_pos] == '%':

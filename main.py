@@ -14,7 +14,7 @@ Parser     = Parser(buffer)
 
 statements = Parser.parse()
 
-Generator  = CodeGenerate("TESTE" , statements)
+Generator  = CodeGenerate("NEW" , statements)
 
 
 Generator.GenerateMachineCode()

@@ -6,6 +6,7 @@ from elf  import *
 import binascii
 import struct
 from enum import Enum
+import binascii
 
 
 class x86_opcode_options(Enum):
@@ -15,8 +16,8 @@ class x86_opcode_options(Enum):
     RegtoRm    = 0
     RmtoReg    = 1
 
-class X86_Mod_options(Enum)
-
+class X86_Mod_options(Enum):
+    empty = 0
 
 
 
@@ -40,7 +41,7 @@ class CodeGenerate():
         modrm_encode = (mod << 6) | (source << 0) | (destination << 0)
         return modrm_encode
 
-    def encode_opcode(self ,  instr_number  ,  mnemonic , directionbit  , operandsize):
+    def encode_opcode(self ,  instr_number   , directionbit  , operandtype):
         opcode =  instr_number  | (directionbit << 1)  | operandtype
         return opcode
 
@@ -71,8 +72,11 @@ class CodeGenerate():
                              return bytearray(machinecode)
 
                     if isinstance(source , Decimal) and isinstance(destination , Register32):
+                           print ("asdds")
                            mod = 3
+
                            source_number        =  struct.pack("<i" , source.Get_decimal())
+
                            destination_register =  destination.Get_RegisterNumber()
 
                            reg = 0
@@ -83,7 +87,7 @@ class CodeGenerate():
 
                            opcode =   0x80 | (directionbit << 1) | (const << 0)
 
-                           machinecode.append(self.encode_opcode(statement , 0x80 , x86_opcode_options.RmtoReg ,  x86_opcode_options.Operands32)
+                           machinecode.append(self.encode_opcode(0x80 , x86_opcode_options.RmtoReg.value ,  x86_opcode_options.Operands32.value))
                            machinecode.append(modrm)
 
 
@@ -104,9 +108,10 @@ class CodeGenerate():
 
 
 
+
         #ph = ProgramHeader(SegmentType.PT_LOAD, 0x00100054 )
 
-        Ph = ProgramHeader(SegmentHeader.PT_LOAD , ELF_HEADER_SIZE + 32 , 0x00100054 , 0 ,len(machinecode) , len(machinecode) , 0x7 , 0x1000);
+        Ph = ProgramHeader(SegmentHeader.PT_LOAD , ELF_HEADER_SIZE + 32 , 0x00100054 , 0 ,len(machinecode) , len(machinecode) , 0x7 , 0x1000)
         Hd = Header(TypeFile.ET_EXEC)
 
         elf  = ElfFile(Hd , Ph , machinecode)

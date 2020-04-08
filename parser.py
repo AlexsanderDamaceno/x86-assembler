@@ -28,7 +28,7 @@ class Parser():
                opcode = Token.Get_Token_value()
 
                Token  = self.Tokenizer.nextToken()
-              
+
              # source can be Register or Decimal
                Token.match(TokenType.Register , TokenType.Decimal)
                operands.append(self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value()))

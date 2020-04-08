@@ -1,3 +1,1 @@
-add  $1 , %ecx
-add  $2 , %ecx
-add  $2 , %ecx
+sub  %eax , %ecx

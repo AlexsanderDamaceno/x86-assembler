@@ -1,11 +1,12 @@
-import operands
 from operands import Register32
 from operands import Register
 from operands import Decimal
+from Instructions.sub import Sub32
 from elf  import *
+from enum import Enum
 import binascii
 import struct
-from enum import Enum
+import operands
 import binascii
 
 
@@ -13,13 +14,21 @@ class x86_opcode_options(Enum):
     Operands32 = 1
     Operands8  = 0
 
-    RegtoRm    = 0
-    RmtoReg    = 1
 
 class X86_Mod_options(Enum):
-    empty = 0
+    RegisterIndirect     = 0
+    OneByteDisplacement  = 1
+    FourByteDisplacement = 2
+    RegisterAddress      = 3
 
+class x86_Operand_size(Enum):
+   Operands16 = 1
+   Operands32 = 1
+   Operands8  = 0
 
+class x86_DirectionBit(Enum):
+    RegtoRm    = 0
+    RmtoReg    = 1
 
 
 class CodeGenerate():
@@ -49,7 +58,7 @@ class CodeGenerate():
     def  GenerateStatementCode(self, statement):
            mnemonic = statement.Get_mnemonic()
 
-           if mnemonic == 'add':
+           if mnemonic == 'sub':
 
                     machinecode = []
                     modrm = 0
@@ -67,9 +76,12 @@ class CodeGenerate():
 
 
                            if isinstance(source , Register32) and isinstance(destination , Register32):
-                             machinecode.append(self.encode_opcode(statement , mnemonic , x86_opcode_options.RegtoRm , x86_opcode_options.Operands32))
-                             machinecode.append(self.modrm(mod , source.Get_RegisterNumber()  ,  destination.Get_RegisterNumber()))
-                             return bytearray(machinecode)
+                             s            = source.Get_RegisterNumber()
+                             d            = destination.Get_RegisterNumber()
+                             Operandsize  = x86_Operand_size.Operands32.value
+                             directionbit = x86_DirectionBit.RegtoRm.value
+                             mod          = X86_Mod_options.value
+                             return bytearray(Sub32(Operandsize , directionbit , mode ,  s , d).EncodeInstruction())
 
                     if isinstance(source , Decimal) and isinstance(destination , Register32):
                            print ("asdds")

@@ -1,1 +1,1 @@
-sub  %eax , %ecx
+subw %ax , %cx

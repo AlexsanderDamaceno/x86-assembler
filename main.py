@@ -1,7 +1,7 @@
 from TokenTypes import TokenType
 from Tokenizer import Tokenizer
 from parser import Parser
-from  operands import Register32
+from operands import *
 from generate import CodeGenerate
 
 

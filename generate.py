@@ -1,7 +1,7 @@
-from operands import Register32
+from operands import Register
 from operands import Register
 from operands import Decimal
-from Instructions.sub import Sub32
+from Instructions.sub import *
 from elf  import *
 from enum import Enum
 import binascii
@@ -15,11 +15,11 @@ class x86_opcode_options(Enum):
     Operands8  = 0
 
 
-class X86_Mod_options(Enum):
-    RegisterIndirect     = 0
-    OneByteDisplacement  = 1
-    FourByteDisplacement = 2
-    RegisterAddress      = 3
+class x86_Mod_options(Enum):
+  RegisterIndirect     = 0
+  OneByteDisplacement  = 1
+  FourByteDisplacement = 2
+  RegisterAddress      = 3
 
 class x86_Operand_size(Enum):
    Operands16 = 1
@@ -30,6 +30,8 @@ class x86_DirectionBit(Enum):
     RegtoRm    = 0
     RmtoReg    = 1
 
+class x86_PrefixByte(Enum):
+    Operand_16bits = 0x66
 
 class CodeGenerate():
 
@@ -46,61 +48,43 @@ class CodeGenerate():
     def printb(self, value):
         print("{0:b}".format(value))
 
-    def modrm(self , mod , source , destination):
-        modrm_encode = (mod << 6) | (source << 0) | (destination << 0)
-        return modrm_encode
-
-    def encode_opcode(self ,  instr_number   , directionbit  , operandtype):
-        opcode =  instr_number  | (directionbit << 1)  | operandtype
-        return opcode
 
 
     def  GenerateStatementCode(self, statement):
            mnemonic = statement.Get_mnemonic()
 
-           if mnemonic == 'sub':
 
-                    machinecode = []
-                    modrm = 0
-
+           if mnemonic[:len(mnemonic)-1] == 'sub':
                     operands      = statement.Get_Operands()
                     source        = operands[0]
                     destination   = operands[1]
-
-
-
+                    print(source.Get_RegisterNumber())
                     if isinstance(source , Register) and isinstance(destination , Register):
 
-                           mod = 3 # mod code for Register
+                             prefix = -1
+
+                             if mnemonic[-1] == 'w':
+                                 prefix = 0x66
 
 
-
-                           if isinstance(source , Register32) and isinstance(destination , Register32):
                              s            = source.Get_RegisterNumber()
                              d            = destination.Get_RegisterNumber()
-                             Operandsize  = x86_Operand_size.Operands32.value
+
+                             if mnemonic[-1]   == 'l':
+                               Operandsize  = x86_Operand_size.Operands32.value
+                             elif mnemonic[-1] == 'w':
+                               Operandsize  = x86_Operand_size.Operands16.value
+                             elif mnemonic[-1] == 'b':
+                               Operandsize  = x86_Operand_size.Operands8.value
+
+
+
                              directionbit = x86_DirectionBit.RegtoRm.value
-                             mod          = X86_Mod_options.value
-                             return bytearray(Sub32(Operandsize , directionbit , mode ,  s , d).EncodeInstruction())
+                             mod          = x86_Mod_options.RegisterAddress.value
+                             return bytearray(Sub(prefix , Operandsize , directionbit , mod ,  s , d).EncodeInstruction())
 
                     if isinstance(source , Decimal) and isinstance(destination , Register32):
-                           print ("asdds")
-                           mod = 3
 
-                           source_number        =  struct.pack("<i" , source.Get_decimal())
-
-                           destination_register =  destination.Get_RegisterNumber()
-
-                           reg = 0
-                           modrm = (mod << 6) | (reg << 0) | destination_register
-
-                           directionbit = 0
-                           const = 1
-
-                           opcode =   0x80 | (directionbit << 1) | (const << 0)
-
-                           machinecode.append(self.encode_opcode(0x80 , x86_opcode_options.RmtoReg.value ,  x86_opcode_options.Operands32.value))
-                           machinecode.append(modrm)
 
 
 

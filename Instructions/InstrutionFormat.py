@@ -1,8 +1,11 @@
-class Sub():
-    def __init__(self , Operand16mode  , SizeType , DirectionBit , Mod , Reg , Rm):
+import InstructionTable
+
+class IntelInstruction2op():
+    def __init__(self , Mnemonic ,  Operand16mode  , SizeType , DirectionBit , Mod , Reg , Rm):
         self.Operand16Mode = Operand16mode
         self.modrm_encode  = 0
-        self.opcode        = 0x28
+        print(Mnemonic)
+        self.opcode        = InstructionTable.instruction_table[Mnemonic]
         self.SizeType      = SizeType
         self.DirectionBit  = DirectionBit
         self.Mod           = Mod
@@ -17,7 +20,7 @@ class Sub():
 
     def makeOpcode(self):
        self.opcode = (self.opcode) | (self.DirectionBit) | self.SizeType << 0
-       print(hex(self.opcode))
+
        return self.opcode
 
     def modRM(self):
@@ -26,17 +29,18 @@ class Sub():
 
     def EncodeInstruction(self):
         instruction  = []
-        r = self.makePrefixBytes()
-        if r != -1:
-             instruction.append(r)
+        prefixbytes = self.makePrefixBytes()
+
+        if prefixbytes != -1:
+             instruction.append(prefixbytes)
         instruction.append(self.makeOpcode())
         instruction.append(self.modRM())
+
         return instruction
 
 class Sub32_ImReg():
     def __init__(self , SizeType , DirectionBit , Mod , Reg , Rm):
-
-        self.prefix        = 0
+        self.Operand16Mode = Operand16mode
         self.modrm_encode  = 0
         self.opcode        = 0x29
         self.SizeType      = SizeType

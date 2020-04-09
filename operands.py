@@ -20,6 +20,12 @@ class Decimal():
     def Get_decimal(self):
         return self.value
 
+class Address():
+    def __init__(self , base):
+        self.base = base
+
+    def Get_base(self):
+        return self.base.Get_RegisterNumber()
 
 
 class Operands():

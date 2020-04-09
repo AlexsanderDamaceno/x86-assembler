@@ -1,7 +1,5 @@
-from operands import Register
-from operands import Register
-from operands import Decimal
-from Instructions.sub import *
+from operands import *
+from Instructions.InstrutionFormat import *
 from elf  import *
 from enum import Enum
 import binascii
@@ -51,23 +49,24 @@ class CodeGenerate():
 
 
     def  GenerateStatementCode(self, statement):
-           mnemonic = statement.Get_mnemonic()
-
-
-           if mnemonic[:len(mnemonic)-1] == 'sub':
+                    mnemonic = statement.Get_mnemonic()
                     operands      = statement.Get_Operands()
                     source        = operands[0]
                     destination   = operands[1]
-                    print(source.Get_RegisterNumber())
-                    if isinstance(source , Register) and isinstance(destination , Register):
+
+                    if (isinstance(source , Register) or isinstance(source , Address)) and isinstance(destination , Register):
 
                              prefix = -1
 
                              if mnemonic[-1] == 'w':
                                  prefix = 0x66
 
+                             if   isinstance(source , Register):
+                               s  = source.Get_RegisterNumber()
+                             if isinstance(source , Address):
+                               s  =  source.Get_base()
 
-                             s            = source.Get_RegisterNumber()
+
                              d            = destination.Get_RegisterNumber()
 
                              if mnemonic[-1]   == 'l':
@@ -78,10 +77,25 @@ class CodeGenerate():
                                Operandsize  = x86_Operand_size.Operands8.value
 
 
+                             if isinstance(source , Address):
+                                  tmp = d
+                                  d = s
+                                  s = tmp
 
-                             directionbit = x86_DirectionBit.RegtoRm.value
-                             mod          = x86_Mod_options.RegisterAddress.value
-                             return bytearray(Sub(prefix , Operandsize , directionbit , mod ,  s , d).EncodeInstruction())
+
+                             if isinstance(source , Register):
+                               directionbit = x86_DirectionBit.RegtoRm.value
+                             else:
+                               directionbit = x86_DirectionBit.RmtoReg.value
+
+
+
+                             if isinstance(source , Address):
+                               mod          = x86_Mod_options.RegisterIndirect.value
+                             else:
+                               mod          = x86_Mod_options.RegisterAddress.value
+
+                             return bytearray(IntelInstruction2op(mnemonic[:len(mnemonic)-1] , prefix , Operandsize , directionbit , mod ,  s , d).EncodeInstruction())
 
                     if isinstance(source , Decimal) and isinstance(destination , Register32):
 

@@ -5,6 +5,7 @@ from operands import *
 from generate import CodeGenerate
 
 
+
 file = open("TESTE" , "r")
 
 buffer  = file.read()

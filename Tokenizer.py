@@ -11,6 +11,12 @@ class Tokenizer():
     def advance(self):
          self.text_pos += 1
 
+    def lookahead(self):
+     if self.text_pos + 1 < len(self.filestream):
+        return self.filestream[self.text_pos+1]
+
+
+
     def nextToken(self):
         if self.text_pos >= len(self.filestream) - 1:
              print("end of file")
@@ -33,7 +39,7 @@ class Tokenizer():
                   name +=  self.filestream[self.text_pos]
                   self.advance()
 
-             return Token(TokenType.Name , name)
+             return Token(TokenType.Mnemonic , name)
 
         elif self.filestream[self.text_pos] == '%':
 
@@ -58,6 +64,16 @@ class Tokenizer():
 
 
             return Token(TokenType.Decimal ,  int(number))
+
+        elif  self.filestream[self.text_pos] == '(':
+                self.advance()
+                return Token(TokenType.LPAREN , '(')
+
+        elif  self.filestream[self.text_pos] == ')':
+                    self.advance()
+                    return Token(TokenType.RPAREN , ')')
+
+
 
 
         elif  self.filestream[self.text_pos]  == '\n':

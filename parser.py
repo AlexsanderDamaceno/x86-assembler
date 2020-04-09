@@ -1,6 +1,6 @@
 from Tokenizer   import Tokenizer
 from TokenTypes  import TokenType
-from operands    import Operands
+from operands    import *
 from Instruction import Intruction
 
 class Parser():
@@ -21,7 +21,12 @@ class Parser():
            if  Token.Get_Token_Type() ==   TokenType.EOF:
                break
 
-           if  Token.Get_Token_Type() ==  TokenType.Name or Token.Get_Token_Type() == TokenType.Decimal:
+
+
+
+
+
+           if  Token.Get_Token_Type() ==  TokenType.Mnemonic:
              # statement -> mnemonic (%register | $decimal) , %register
                operands = []
 
@@ -30,8 +35,16 @@ class Parser():
                Token  = self.Tokenizer.nextToken()
 
              # source can be Register or Decimal
-               Token.match(TokenType.Register , TokenType.Decimal)
-               operands.append(self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value()))
+               if Token.Get_Token_Type() == TokenType.LPAREN:
+                     Token = self.Tokenizer.nextToken()
+                     operand = self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value())
+                     operands.append(Address(operand))
+                     Token = self.Tokenizer.nextToken()
+                     Token.match(TokenType.RPAREN)
+
+               else:
+                     Token.match(TokenType.Register , TokenType.Decimal)
+                     operands.append(self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value()))
 
                Token = self.Tokenizer.nextToken()
                Token.match(TokenType.Colon)
@@ -49,5 +62,6 @@ class Parser():
                     break
 
                Token.match(TokenType.NewLine)
+
 
        return statements

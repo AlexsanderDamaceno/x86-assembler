@@ -51,10 +51,13 @@ class CodeGenerate():
     def  GenerateStatementCode(self, statement):
                     mnemonic = statement.Get_mnemonic()
                     operands      = statement.Get_Operands()
-                    source        = operands[0]
-                    destination   = operands[1]
 
-                    if (isinstance(source , Register) or isinstance(source , Address)) and isinstance(destination , Register):
+                    source        = operands[0]
+                    if len(operands) >= 2:
+                      destination   = operands[1]
+
+                    if len(operands) == 2:
+                     if (isinstance(source , Register) or isinstance(source , Address)) and isinstance(destination , Register):
 
                              prefix = -1
 
@@ -96,13 +99,43 @@ class CodeGenerate():
                                mod          = x86_Mod_options.RegisterAddress.value
 
                              return bytearray(IntelInstruction2op(mnemonic[:len(mnemonic)-1] , prefix , Operandsize , directionbit , mod ,  s , d).EncodeInstruction())
-
-                    if isinstance(source , Decimal) and isinstance(destination , Register32):
-
+                    else:
 
 
+                      if isinstance(source , Register):
 
-                           return bytearray(machinecode) + source_number  # encode immediate
+                          prefix = -1
+
+                          if mnemonic[-1] == 'w':
+                              prefix = 0x66
+
+                          if   isinstance(source , Register):
+                            s  = source.Get_RegisterNumber()
+
+
+
+
+
+                          if mnemonic[-1]   == 'l':
+                            Operandsize  = x86_Operand_size.Operands32.value
+                          elif mnemonic[-1] == 'w':
+                            Operandsize  = x86_Operand_size.Operands16.value
+                          elif mnemonic[-1] == 'b':
+                            Operandsize  = x86_Operand_size.Operands8.value
+
+
+                          directionbit = x86_DirectionBit.RmtoReg.value
+
+
+
+                          if isinstance(source , Address):
+                            mod          = x86_Mod_options.RegisterIndirect.value
+                          else:
+                            mod          = x86_Mod_options.RegisterAddress.value
+
+                          return bytearray(IntelInstruction1op(mnemonic[:len(mnemonic)-1] , prefix , Operandsize , mod ,  s ).EncodeInstruction())
+
+
 
 
 

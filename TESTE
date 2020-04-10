@@ -1,3 +1,8 @@
 subw %ax  ,  %cx
 addl %ax  ,  %cx
 andl %eax , %edx
+incl %eax
+incl %eax
+incl %eax
+subw %ax , %cx
+subw %dx , %bx

@@ -46,6 +46,16 @@ class Parser():
                      Token.match(TokenType.Register , TokenType.Decimal)
                      operands.append(self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value()))
 
+
+                     if self.Tokenizer.lookahead().Get_Token_Type() == TokenType.NewLine:
+                         statements.append(Intruction(opcode , operands))
+                         self.Tokenizer.nextToken()
+                         continue
+                     if self.Tokenizer.lookahead().Get_Token_Type() == TokenType.EOF:
+                          statements.append(Intruction(opcode , operands))
+                          self.Tokenizer.nextToken()
+                          break
+
                Token = self.Tokenizer.nextToken()
                Token.match(TokenType.Colon)
 

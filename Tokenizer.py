@@ -12,8 +12,10 @@ class Tokenizer():
          self.text_pos += 1
 
     def lookahead(self):
-     if self.text_pos + 1 < len(self.filestream):
-        return self.filestream[self.text_pos+1]
+     orig = self.text_pos
+     Token = self.nextToken()
+     self.text_pos = orig
+     return Token
 
 
 

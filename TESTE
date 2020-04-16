@@ -4,5 +4,5 @@ andl %eax , %edx
 incl %eax
 incl %eax
 incl %eax
-subw %ax , %cx
+subw (%ax) , %cx
 subw %dx , %bx

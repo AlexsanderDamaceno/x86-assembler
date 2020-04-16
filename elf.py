@@ -36,7 +36,7 @@ class SegmentHeader(Enum):
 
 class Header():
    def __init__(self , type):
-    self.e_ident     = [0x7f , 'E' , 'L' , 'F' , ELFCLASSTYPE.ELFCLASS32.value , ELFDATA.ELFDATA2LSB.value , E_VERSION.EV_CURRENT.value , 0 , 0 , 0, 0 , 0,0 , 0 , 0 , 0] # magic number
+    self.e_ident     = [0x7f , "E".encode('ascii') , "L".encode('ascii') , "F".encode('ascii') , ELFCLASSTYPE.ELFCLASS32.value , ELFDATA.ELFDATA2LSB.value , E_VERSION.EV_CURRENT.value , 0 , 0 , 0, 0 , 0,0 , 0 , 0 , 0] # magic number
     self.e_type      = type.value
     self.e_version   = E_VERSION.EV_CURRENT.value
     self.e_machine   = Arch.EM_386.value
@@ -52,9 +52,10 @@ class Header():
     self.e_shstrndx  = 0
 
    def generateBytes(self):
-     v = self.e_ident
+     v = self.e_ident 
 
-     value_ident  = struct.pack("bcccbbbbbbbbbbbb" , *v)
+
+     value_ident  = struct.pack(">bcccbbbbbbbbbbbb" , *v)
 
      value1 = struct.pack("<hhiiiii" , self.e_type , self.e_machine , self.e_version ,self.e_entry , self.e_phoff , 0 , self.e_flags)
 

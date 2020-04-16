@@ -75,6 +75,12 @@ class Tokenizer():
                     self.advance()
                     return Token(TokenType.RPAREN , ')')
 
+        elif self.filestream[self.text_pos] == '-' or self.filestream[self.text_pos].isdigit():
+                   val = ''
+                   while self.filestream[self.text_pos].isdigit():
+                        val += self.filestream[self.text_pos]
+                        self.advance()
+                    return Token(TokenType.number)
 
 
 

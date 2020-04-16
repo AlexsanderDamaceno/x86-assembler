@@ -6,7 +6,7 @@ class TokenType(Enum):
  Register = 2
  Colon    = 3
  NewLine  = 4
- Decimal  = 5
+ Number   = 5
  LPAREN   = 6
  RPAREN   = 7
  EOF = 8

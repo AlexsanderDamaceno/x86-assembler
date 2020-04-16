@@ -21,8 +21,9 @@ class Decimal():
         return self.value
 
 class Address():
-    def __init__(self , base):
+    def __init__(self , base , disp):
         self.base = base
+        self.disp = disp
 
     def Get_base(self):
         return self.base.Get_RegisterNumber()

@@ -1,15 +1,16 @@
-import InstructionTable
+from  Instructions.InstructionTable  import *
 
 class IntelInstruction2op():
-    def __init__(self , Mnemonic ,  Operand16mode  , SizeType , DirectionBit , Mod , Reg , Rm):
+    def __init__(self , Mnemonic ,  Operand16mode  , SizeType , DirectionBit , Mod , Reg , Rm  , disp):
         self.Operand16Mode = Operand16mode
         self.modrm_encode  = 0
-        self.opcode        = InstructionTable.SelectOpcode(Mnemonic)
+        self.opcode        = SelectOpcode(Mnemonic)
         self.SizeType      = SizeType
         self.DirectionBit  = DirectionBit
         self.Mod           = Mod
         self.Reg           = Reg
         self.Rm            = Rm
+        self.disp          = disp
 
     def makePrefixBytes(self):
      if self.Operand16Mode != -1:
@@ -25,6 +26,8 @@ class IntelInstruction2op():
     def modRM(self):
         self.modrm_encode = (self.Mod << 6) | (self.Reg  << 0) | (self.Rm << 0)
         return self.modrm_encode
+    def Makedisp(self):
+        return struct.pack("")
 
     def EncodeInstruction(self):
         instruction  = []
@@ -41,7 +44,7 @@ class IntelInstruction1op():
     def __init__(self , Mnemonic ,  Operand16mode , SizeType ,  Mod ,  operand ):
         self.Operand16Mode = Operand16mode
         self.modrm_encode  = 0
-        self.opcode        = InstructionTable.SelectOpcode(Mnemonic)
+        self.opcode        = SelectOpcode(Mnemonic)
         self.SizeType      = SizeType
         self.Mod           = Mod
         self.reg           = 0

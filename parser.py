@@ -35,15 +35,24 @@ class Parser():
                Token  = self.Tokenizer.nextToken()
 
              # source can be Register or Decimal
+               if Token.Get_Token_Type() == TokenType.Number:
+                    disp = Token.Get_Token_value()
+                    Token = self.Tokenizer.nextToken()
+                    Token.match(TokenType.LPAREN)
+                    operand = self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value())
+                    operands.append(Address(operand , disp))
+                    Token.match(TokenType.LPAREN)
+
+
                if Token.Get_Token_Type() == TokenType.LPAREN:
                      Token = self.Tokenizer.nextToken()
                      operand = self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value())
-                     operands.append(Address(operand))
+                     operands.append(Address(operand , None))
                      Token = self.Tokenizer.nextToken()
                      Token.match(TokenType.RPAREN)
 
                else:
-                     Token.match(TokenType.Register , TokenType.Decimal)
+                     Token.match(TokenType.Register , TokenType.Number)
                      operands.append(self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value()))
 
 

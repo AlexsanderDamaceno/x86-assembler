@@ -14,10 +14,10 @@ class Register():
       def Get_RegisterNumber(self):
           return  self.intel_number
 
-class Decimal():
+class Number():
     def __init__(self ,  value):
         self.value  = value
-    def Get_decimal(self):
+    def Get_Number(self):
         return self.value
 
 class Address():
@@ -27,6 +27,8 @@ class Address():
 
     def Get_base(self):
         return self.base.Get_RegisterNumber()
+    def Get_Disp(self):
+        return self.disp
 
 
 class Operands():
@@ -44,5 +46,5 @@ class Operands():
           elif value in registers_map8:
              return Register(value , registers_map8[value])
 
-         elif  Type == TokenType.Decimal:
-              return Decimal(value)
+         elif  Type == TokenType.Number:
+              return Number(value)

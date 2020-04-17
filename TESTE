@@ -1,8 +1,2 @@
-subw %ax  ,  %cx
-addl %ax  ,  %cx
-andl %eax , %edx
-incl %eax
-incl %eax
-incl %eax
-subw (%ax) , %cx
-subw %dx , %bx
+addw  $1 , %ax
+addw -4(%ax)  ,  %cx

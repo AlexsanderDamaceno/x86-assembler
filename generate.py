@@ -46,9 +46,20 @@ class CodeGenerate():
     def printb(self, value):
         print("{0:b}".format(value))
 
+    def verify_source(self, source):
+        if isinstance(source , Register) or isinstance(source , Address) or isinstance(source , Number):
+               return 1
+        return 0
+
+    def verify_destination(self, destination):
+        if isinstance(destination , Register) or isinstance(destination , Address):
+               return 1
+        return 0
+
 
 
     def  GenerateStatementCode(self, statement):
+
                     mnemonic = statement.Get_mnemonic()
                     operands      = statement.Get_Operands()
 
@@ -57,17 +68,25 @@ class CodeGenerate():
                       destination   = operands[1]
 
                     if len(operands) == 2:
-                     if (isinstance(source , Register) or isinstance(source , Address)) and isinstance(destination , Register):
+
+
+                     if  self.verify_source(source) and self.verify_destination(destination):
 
                              prefix = -1
 
                              if mnemonic[-1] == 'w':
                                  prefix = 0x66
 
+                             s = None
+                             d = None
+
                              if   isinstance(source , Register):
-                               s  = source.Get_RegisterNumber()
+                                s  = source.Get_RegisterNumber()
                              if isinstance(source , Address):
-                               s  =  source.Get_base()
+                                s  =  source.Get_base()
+                             if isinstance(source , Number):
+                                s = source
+
 
 
                              d            = destination.Get_RegisterNumber()
@@ -91,14 +110,35 @@ class CodeGenerate():
                              else:
                                directionbit = x86_DirectionBit.RmtoReg.value
 
+                             if isinstance(source , Number):
+                                 directionbit = Operandsize
 
 
+                             disp = None
+                             mod = 0
                              if isinstance(source , Address):
-                               mod          = x86_Mod_options.RegisterIndirect.value
-                             else:
-                               mod          = x86_Mod_options.RegisterAddress.value
+                               if source.Get_Disp() != None:
 
-                             return bytearray(IntelInstruction2op(mnemonic[:len(mnemonic)-1] , prefix , Operandsize , directionbit , mod ,  s , d).EncodeInstruction())
+                                   if source.Get_Disp() >= -127 and source.Get_Disp() <= 255:
+                                       mod = x86_Mod_options.OneByteDisplacement.value
+                                   else:
+                                       mod = x86_Mod_options.FourByteDisplacement.value
+                               else:
+                                       mod          = x86_Mod_options.RegisterIndirect.value
+
+                               disp = source.Get_Disp()
+
+                             else:
+                                 mod          = x86_Mod_options.RegisterAddress.value
+
+
+                             if isinstance(source , Number):
+                                 mod          = x86_Mod_options.RegisterIndirect.value
+                            
+
+
+                             print(s)
+                             return IntelInstruction2op(mnemonic[:len(mnemonic)-1] , prefix , Operandsize , directionbit , mod ,  s , d , disp).EncodeInstruction()
                     else:
 
 
@@ -128,9 +168,11 @@ class CodeGenerate():
 
 
 
-                          if isinstance(source , Address):
+                          if isinstance(source , Address) or isinstance(source , Number):
+
                             mod          = x86_Mod_options.RegisterIndirect.value
                           else:
+
                             mod          = x86_Mod_options.RegisterAddress.value
 
                           return bytearray(IntelInstruction1op(mnemonic[:len(mnemonic)-1] , prefix , Operandsize , mod ,  s ).EncodeInstruction())

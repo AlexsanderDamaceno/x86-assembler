@@ -9,4 +9,5 @@ class TokenType(Enum):
  Number   = 5
  LPAREN   = 6
  RPAREN   = 7
- EOF = 8
+ Disp     = 8
+ EOF = 9

@@ -65,7 +65,7 @@ class Tokenizer():
                self.advance()
 
 
-            return Token(TokenType.Decimal ,  int(number))
+            return Token(TokenType.Number ,  int(number))
 
         elif  self.filestream[self.text_pos] == '(':
                 self.advance()
@@ -77,10 +77,19 @@ class Tokenizer():
 
         elif self.filestream[self.text_pos] == '-' or self.filestream[self.text_pos].isdigit():
                    val = ''
+                   flag = 0
+                   if self.filestream[self.text_pos] == '-':
+                       flag = 1
+                       self.advance()
+
                    while self.filestream[self.text_pos].isdigit():
                         val += self.filestream[self.text_pos]
                         self.advance()
-                    return Token(TokenType.number)
+
+                   if flag:
+                        return Token(TokenType.Disp , -int(val))
+                   else:
+                       return Token(TokenType.Disp ,   int(val))
 
 
 

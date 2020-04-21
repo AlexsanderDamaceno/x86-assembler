@@ -8,6 +8,8 @@ import struct
 
 Operandssize = {'b' : x86_Operand_size.Operands8.value , 'w' : x86_Operand_size.Operands16.value , 'l' : x86_Operand_size.Operands32.value}
 
+Immediatereg = {'add' : 0  , 'sub' : 5}
+
 def prefix(suffix):
     if suffix == 'w':
       return 1 
@@ -25,9 +27,10 @@ def determineopsize(suffix):
        
 
 def make2opcode(mnemonic , suffix , source_type  ,  destination_type):
-      opcode = 0
-    
+      opcode = 0x0
+      print(mnemonic)
       if isinstance(source_type  , Register) and isinstance(destination_type , Register): 
+         
           opcode = instruction_table2OP[mnemonic] | chooseDirectionBit(source_type  , destination_type) << 1 | determineopsize(suffix)
       elif isinstance(source_type  , Number) and isinstance(destination_type , Register): 
           DirectionBit = 0
@@ -35,6 +38,7 @@ def make2opcode(mnemonic , suffix , source_type  ,  destination_type):
       
       by = bytearray()
       by.append(opcode)
+      
       return by
 
 def makeImmediate(source , suffix): 
@@ -45,18 +49,19 @@ def makeImmediate(source , suffix):
       if suffix == 'l': 
           return  struct.pack('<i' , source.Get_Number())
 
-def makemod_rm2(source , destination , suffix):
+def makemod_rm2(mnemonic , source , destination , suffix):
       if isinstance(source  , Register) and isinstance(destination, Register): 
-        modrm = x86_Mod_options.RegisterAddress.value << 6 |  source.Get_RegisterNumber() << 3 | destination.Get_RegisterNumber()
+        modrm = bytearray()
+        modrm.append(x86_Mod_options.RegisterAddress.value << 6 |  source.Get_RegisterNumber()  << 3 | destination.Get_RegisterNumber())
         return  modrm
       if isinstance(source  , Number) and isinstance(destination, Register): 
 
-         reg    = 0
-        
+         reg    = Immediatereg[mnemonic]
+       
          modrm = bytearray()
       
          modrm.append(x86_Mod_options.RegisterAddress.value << 6 |  reg  << 3 | destination.Get_RegisterNumber())
-
+         
          return modrm + makeImmediate(source , suffix)
 
 
@@ -66,12 +71,10 @@ def debug(instruction):
 
 def encode2op(mnemonic , source , destination): 
       instruction  = bytearray()
-     
       if prefix(mnemonic[len(mnemonic)-1:]):
          instruction.append(x86_PrefixByte.Operand_16bits.value)
-
       instruction.extend(make2opcode(mnemonic[:len(mnemonic)-1] ,  mnemonic[len(mnemonic)-1:] , source , destination))
-      instruction.extend(makemod_rm2(source , destination ,  mnemonic[len(mnemonic)-1]))
+      instruction.extend(makemod_rm2(mnemonic[:len(mnemonic)-1], source , destination ,  mnemonic[len(mnemonic)-1]))
       return instruction
 
     

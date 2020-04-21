@@ -1,5 +1,5 @@
 from operands import *
-from Instructions.InstrutionFormat import *
+from Instructions.InstructionFormat import *
 from elf  import *
 from enum import Enum
 import binascii
@@ -49,7 +49,11 @@ class CodeGenerate():
 
 
                      if  self.verify_source(source) and self.verify_destination(destination):
-                              return bytes(encode2op(mnemonic , source , destination))
+                              print(mnemonic)
+                              print(source)
+                              print(destination)
+                              return encode2op(mnemonic , source , destination)
+
 
 
 
@@ -57,7 +61,7 @@ class CodeGenerate():
     def  GenerateMachineCode(self):
         machinecode = bytearray()
         for statement in self.statements:
-             machinecode += self.GenerateStatementCode(statement)
+             machinecode.extend(self.GenerateStatementCode(statement))
 
 
 

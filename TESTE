@@ -1,0 +1,4 @@
+addl $10  , %ebx 
+movl %ebx , %eax
+subl  $10 , %eax
+

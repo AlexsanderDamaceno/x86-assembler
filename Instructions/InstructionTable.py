@@ -1,15 +1,18 @@
 from operands import *
 # table for when instruction operands are both registers
 instruction_table2OP = {
- "add" : 0x0 ,
+ "add" : 0x0  ,
  "and" : 0x20 ,
- "sub" : 0x28
+ "sub" : 0x28 ,
+ "cmp" : 0x38 , 
+ "mov" : 0x88
 }
 
 instruction_table2OPImme = {
  "add" : 0x80 ,
+
  "and" : 0x20 ,
- "sub" : 0x28
+ "sub" : 0x80  
 }
 
 

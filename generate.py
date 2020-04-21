@@ -8,28 +8,6 @@ import operands
 import binascii
 
 
-class x86_opcode_options(Enum):
-    Operands32 = 1
-    Operands8  = 0
-
-
-class x86_Mod_options(Enum):
-  RegisterIndirect     = 0
-  OneByteDisplacement  = 1
-  FourByteDisplacement = 2
-  RegisterAddress      = 3
-
-class x86_Operand_size(Enum):
-   Operands16 = 1
-   Operands32 = 1
-   Operands8  = 0
-
-class x86_DirectionBit(Enum):
-    RegtoRm    = 0
-    RmtoReg    = 1
-
-class x86_PrefixByte(Enum):
-    Operand_16bits = 0x66
 
 class CodeGenerate():
 
@@ -71,121 +49,13 @@ class CodeGenerate():
 
 
                      if  self.verify_source(source) and self.verify_destination(destination):
-
-                             prefix = -1
-
-                             if mnemonic[-1] == 'w':
-                                 prefix = 0x66
-
-                             s = None
-                             d = None
-
-                             if   isinstance(source , Register):
-                                s  = source.Get_RegisterNumber()
-                             if isinstance(source , Address):
-                                s  =  source.Get_base()
-                             if isinstance(source , Number):
-                                s = source
-
-
-
-                             d            = destination.Get_RegisterNumber()
-
-                             if mnemonic[-1]   == 'l':
-                               Operandsize  = x86_Operand_size.Operands32.value
-                             elif mnemonic[-1] == 'w':
-                               Operandsize  = x86_Operand_size.Operands16.value
-                             elif mnemonic[-1] == 'b':
-                               Operandsize  = x86_Operand_size.Operands8.value
-
-
-                             if isinstance(source , Address):
-                                  tmp = d
-                                  d = s
-                                  s = tmp
-
-
-                             if isinstance(source , Register):
-                               directionbit = x86_DirectionBit.RegtoRm.value
-                             else:
-                               directionbit = x86_DirectionBit.RmtoReg.value
-
-                             if isinstance(source , Number):
-                                 directionbit = Operandsize
-
-
-                             disp = None
-                             mod = 0
-                             if isinstance(source , Address):
-                               if source.Get_Disp() != None:
-
-                                   if source.Get_Disp() >= -127 and source.Get_Disp() <= 255:
-                                       mod = x86_Mod_options.OneByteDisplacement.value
-                                   else:
-                                       mod = x86_Mod_options.FourByteDisplacement.value
-                               else:
-                                       mod          = x86_Mod_options.RegisterIndirect.value
-
-                               disp = source.Get_Disp()
-
-                             else:
-                                 mod          = x86_Mod_options.RegisterAddress.value
-
-
-                             if isinstance(source , Number):
-                                 mod          = x86_Mod_options.RegisterIndirect.value
-                            
-
-
-                             print(s)
-                             return IntelInstruction2op(mnemonic[:len(mnemonic)-1] , prefix , Operandsize , directionbit , mod ,  s , d , disp).EncodeInstruction()
-                    else:
-
-
-                      if isinstance(source , Register):
-
-                          prefix = -1
-
-                          if mnemonic[-1] == 'w':
-                              prefix = 0x66
-
-                          if   isinstance(source , Register):
-                            s  = source.Get_RegisterNumber()
-
-
-
-
-
-                          if mnemonic[-1]   == 'l':
-                            Operandsize  = x86_Operand_size.Operands32.value
-                          elif mnemonic[-1] == 'w':
-                            Operandsize  = x86_Operand_size.Operands16.value
-                          elif mnemonic[-1] == 'b':
-                            Operandsize  = x86_Operand_size.Operands8.value
-
-
-                          directionbit = x86_DirectionBit.RmtoReg.value
-
-
-
-                          if isinstance(source , Address) or isinstance(source , Number):
-
-                            mod          = x86_Mod_options.RegisterIndirect.value
-                          else:
-
-                            mod          = x86_Mod_options.RegisterAddress.value
-
-                          return bytearray(IntelInstruction1op(mnemonic[:len(mnemonic)-1] , prefix , Operandsize , mod ,  s ).EncodeInstruction())
-
-
-
-
+                              return bytes(encode2op(mnemonic , source , destination))
 
 
 
 
     def  GenerateMachineCode(self):
-        machinecode = bytearray(0)
+        machinecode = bytearray()
         for statement in self.statements:
              machinecode += self.GenerateStatementCode(statement)
 

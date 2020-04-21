@@ -1,2 +1,0 @@
-addw  $1 , %ax
-addw -4(%ax)  ,  %cx

@@ -1,4 +1,5 @@
-addl $10  , %ebx 
-movl %ebx , %eax
-subl  $10 , %eax
+addl 4(%edi)  , %edi 
+addw 4(%edi)  , %edi
+ 
+addb 4(%edi)  , %edi 
 

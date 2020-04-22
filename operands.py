@@ -21,12 +21,24 @@ class Number():
         return self.value
 
 class Address():
-    def __init__(self , base , disp):
-        self.base = base
-        self.disp = disp
+    def __init__(self , base , disp , indexreg , scale):
+        self.base     = base
+        self.disp     = disp
+        self.indexreg = indexreg
+        self.scale    = scale 
 
     def Get_base(self):
+       if self.base != None: 
         return self.base.Get_RegisterNumber()
+       return None 
+    def Get_indexreg(self):
+      if self.indexreg != None: 
+        return self.indexreg.Get_RegisterNumber()
+      return None 
+    def Get_scale(self): 
+     if self.scale != None:
+        return self.scale.Get_Number()
+     return None 
     def Get_Disp(self):
         return self.disp
 
@@ -46,5 +58,5 @@ class Operands():
           elif value in registers_map8:
              return Register(value , registers_map8[value])
 
-         elif  Type == TokenType.Number:
+         elif  Type == TokenType.Number or TokenType.Disp:
               return Number(value)

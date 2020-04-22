@@ -22,3 +22,11 @@ class x86_DirectionBit(Enum):
 
 class x86_PrefixByte(Enum):
     Operand_16bits = 0x66
+
+class SibByteoptions(Enum): 
+    OneScale   = 0 
+    TwoScale   = 1
+    FourScale  = 2
+    EightScale = 3
+    Sibbyte    = 4
+

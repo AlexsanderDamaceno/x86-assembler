@@ -37,14 +37,14 @@ class Parser():
 
              # source have adress displacement
                if Token.Get_Token_Type() == TokenType.Disp:
-
+                    
                     disp  = Token.Get_Token_value()
                     Token = self.Tokenizer.nextToken()
                     Token.match(TokenType.LPAREN)
                     Token = self.Tokenizer.nextToken()
 
                     operand = self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value())
-                    operands.append(Address(operand , disp))
+                    operands.append(Address(operand , disp , None , None))
                     Token = self.Tokenizer.nextToken()
                     Token.match(TokenType.RPAREN)
 
@@ -52,12 +52,38 @@ class Parser():
 
 
                elif Token.Get_Token_Type() == TokenType.LPAREN:
-
+                   
                      Token = self.Tokenizer.nextToken()
                      operand = self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value())
-                     operands.append(Address(operand , None))
-                     Token = self.Tokenizer.nextToken()
-                     Token.match(TokenType.RPAREN)
+                     print(self.Tokenizer.look2ahead().Get_Token_Type())
+                     if self.Tokenizer.look2ahead().Get_Token_Type() == TokenType.Register: 
+                         
+                          print("dfd")
+                          basereg =  operand
+
+                         
+                          Token = self.Tokenizer.nextToken()
+                          Token.match(TokenType.Colon)
+                         
+                          Token = self.Tokenizer.nextToken()
+
+                          indexreg = self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value()) 
+                          
+                          Token = self.Tokenizer.nextToken()
+                          Token.match(TokenType.Colon)
+                          
+                          Token  = self.Tokenizer.nextToken()
+                          
+                          scale =  self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value())
+                          
+                          operands.append(Address(operand , None , indexreg , scale))
+                          Token   = self.Tokenizer.nextToken() 
+                          Token.match(TokenType.RPAREN)
+                            
+                     else:   
+                          operands.append(Address(operand , None , None , None))
+                          Token = self.Tokenizer.nextToken()
+                          Token.match(TokenType.RPAREN)
 
                elif  Token.Get_Token_Type() == TokenType.Register or Token.Get_Token_Type() == TokenType.Number:
                      Token.match(TokenType.Register , TokenType.Number)

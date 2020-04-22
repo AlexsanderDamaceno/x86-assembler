@@ -10,7 +10,10 @@ Operandssize = {'b' : x86_Operand_size.Operands8.value , 'w' : x86_Operand_size.
 
 Dispvalue    = {'b' : x86_Mod_options.OneByteDisplacement.value , 'w' : x86_Mod_options.FourByteDisplacement.value , 'l' : x86_Mod_options.FourByteDisplacement.value}
 
+Scale        = {1 : SibByteoptions.OneScale.value, 2  : SibByteoptions.TwoScale.value , 4 : SibByteoptions.FourScale.value  , 8 : SibByteoptions.EightScale.value }
+
 Immediatereg = {'add' : 0  , 'sub' : 5}
+
 
 def prefix(suffix):
     if suffix == 'w':
@@ -58,9 +61,7 @@ def makeImmediateorDisp(source , suffix):
 def MakeDisp(source , suffix): 
       if suffix == 'b': 
           return  struct.pack('<b' , source.Get_Disp())
-      if suffix == 'w': 
-          return  struct.pack('<h' , source.Get_Disp())
-      if suffix == 'l': 
+      if suffix == 'l' or suffix == 'w': 
           return  struct.pack('<i' , source.Get_Disp())
 
 
@@ -71,21 +72,38 @@ def makemod_rm2(mnemonic , source , destination , suffix):
         return  modrm
       
       if isinstance(source  , Number) and isinstance(destination, Register): 
-
          reg    = Immediatereg[mnemonic]
          modrm = bytearray()
          modrm.append(x86_Mod_options.RegisterAddress.value << 6 |  reg  << 3 | destination.Get_RegisterNumber())
          return modrm + makeImmediate(source , suffix)
 
       if isinstance(source , Address) and  isinstance(destination , Register): 
-         modrm = bytearray()
-         if  source.Get_Disp() == None: 
+         
+        
+         if source.Get_base() != None and source.Get_indexreg() != None and source.Get_scale() != None: 
+
+            modrm_sib = bytearray()
+            sib = SibByteoptions.Sibbyte.value
+
+            modrm_sib.append(x86_Mod_options.RegisterIndirect.value << 6 |  destination.Get_RegisterNumber()  << 3 | sib)
+            scaleop = Scale.get(source.Get_scale())
+            modrm_sib.append(scaleop << 6 |  source.Get_indexreg()  << 3 | source.Get_base())
+            return modrm_sib
+
+
+         elif source.Get_Disp() == None: 
+
+            modrm = bytearray()
             modrm.append(x86_Mod_options.RegisterIndirect.value << 6 |  destination.Get_RegisterNumber()  << 3 | source.Get_base())
             return modrm
          elif source.Get_Disp() != None: 
+            print("faf")
+            modrm = bytearray()
             modfield = Dispvalue.get(suffix)
+           
+            
             modrm.append(modfield << 6 |  destination.Get_RegisterNumber()  << 3 | source.Get_base())
-            print( destination.Get_RegisterNumber() )
+            
             return modrm + MakeDisp(source , suffix)
 
 

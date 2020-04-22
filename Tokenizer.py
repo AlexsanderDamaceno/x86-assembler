@@ -17,6 +17,13 @@ class Tokenizer():
      self.text_pos = orig
      return Token
 
+    def look2ahead(self):
+     orig = self.text_pos
+     Token = self.nextToken()
+     Token = self.nextToken()
+     self.text_pos = orig
+     return Token
+
 
 
     def nextToken(self):

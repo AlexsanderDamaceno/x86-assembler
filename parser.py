@@ -35,10 +35,18 @@ class Parser():
                Token  = self.Tokenizer.nextToken()
 
 
-             # source have adress displacement
-               if Token.Get_Token_Type() == TokenType.Disp:
-                    
+             # source have adress displacement , in this case Mnemonic means label
+
+               if Token.Get_Token_Type() == TokenType.Disp or Token.Get_Token_Type() ==  TokenType.Mnemonic:
+
+
                     disp  = Token.Get_Token_value()
+
+
+
+
+
+
                     Token = self.Tokenizer.nextToken()
                     Token.match(TokenType.LPAREN)
                     Token = self.Tokenizer.nextToken()
@@ -52,35 +60,35 @@ class Parser():
 
 
                elif Token.Get_Token_Type() == TokenType.LPAREN:
-                   
+
                      Token = self.Tokenizer.nextToken()
                      operand = self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value())
                      print(self.Tokenizer.look2ahead().Get_Token_Type())
-                     if self.Tokenizer.look2ahead().Get_Token_Type() == TokenType.Register: 
-                         
-                          print("dfd")
+                     if self.Tokenizer.look2ahead().Get_Token_Type() == TokenType.Register:
+
+
                           basereg =  operand
 
-                         
+
                           Token = self.Tokenizer.nextToken()
-                          Token.match(TokenType.Colon)
-                         
+                          Token.match(TokenType.Comma)
+
                           Token = self.Tokenizer.nextToken()
 
-                          indexreg = self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value()) 
-                          
+                          indexreg = self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value())
+
                           Token = self.Tokenizer.nextToken()
-                          Token.match(TokenType.Colon)
-                          
+                          Token.match(TokenType.Comma)
+
                           Token  = self.Tokenizer.nextToken()
-                          
+
                           scale =  self.operand.MakeOperand(Token.Get_Token_Type() , Token.Get_Token_value())
-                          
+
                           operands.append(Address(operand , None , indexreg , scale))
-                          Token   = self.Tokenizer.nextToken() 
+                          Token   = self.Tokenizer.nextToken()
                           Token.match(TokenType.RPAREN)
-                            
-                     else:   
+
+                     else:
                           operands.append(Address(operand , None , None , None))
                           Token = self.Tokenizer.nextToken()
                           Token.match(TokenType.RPAREN)
@@ -103,7 +111,7 @@ class Parser():
 
 
                Token = self.Tokenizer.nextToken()
-               Token.match(TokenType.Colon)
+               Token.match(TokenType.Comma)
 
                Token = self.Tokenizer.nextToken()
                Token.match(TokenType.Register)

@@ -48,6 +48,10 @@ class Tokenizer():
                   name +=  self.filestream[self.text_pos]
                   self.advance()
 
+            
+
+                      
+
              return Token(TokenType.Mnemonic , name)
 
         elif self.filestream[self.text_pos] == '%':
@@ -62,7 +66,7 @@ class Tokenizer():
         elif  self.filestream[self.text_pos]  == ',':
 
             self.advance()
-            return Token(TokenType.Colon , ',')
+            return Token(TokenType.Comma , ',')
 
         elif self.filestream[self.text_pos] == '$':
             self.advance()
@@ -81,6 +85,8 @@ class Tokenizer():
         elif  self.filestream[self.text_pos] == ')':
                     self.advance()
                     return Token(TokenType.RPAREN , ')')
+        elif self.filestream[self.text_pos] == ':': 
+               return Token(TokenType.Colon , ':')
 
         elif self.filestream[self.text_pos] == '-' or self.filestream[self.text_pos].isdigit():
                    val = ''

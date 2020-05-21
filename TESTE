@@ -1,9 +1,1 @@
-addw 4(%edx) , %eax
-addl (%ebx , %edi , 4) , %ecx
-addl (%ecx , %ebp , 8) , %edx
-addw 10(%edx) , %eax
-addw 20(%esi) , %ebx
-
-
-
-
+xorl (%ebx) , %eax
